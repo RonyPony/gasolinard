@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gasolinard/models/fuels.model.dart';
+import 'package:gasolinard/providers/fuels.provider.dart';
 import 'package:gasolinard/screens/shared_component/custom_card.dart';
+import 'package:provider/provider.dart';
 
 import '../shared_component/shorcut.dart';
 
@@ -16,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size baseSize = MediaQuery.of(context).size;
+    final fuelsProvider = Provider.of<FuelProvider>(context);
+    Future<Fuels> ffll = fuelsProvider.getAll();
     return Scaffold(
       backgroundColor: Colors.grey.shade800,
       body: Padding(
@@ -62,59 +67,74 @@ class _HomeScreenState extends State<HomeScreen> {
               "Combustibles",
               style: TextStyle(fontSize: 28, color: Colors.white),
             ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Shortcut(
-                      texxt: "Gasolina Premium",
-                      value: 137.60,
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Shortcut(
-                      texxt: "Gasolina Regular",
-                      value: 169.40,
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Shortcut(
-                      texxt: "Gasoil Premium",
-                      value: 119.60,
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Shortcut(
-                      texxt: "Gasoil Regular",
-                      value: 177.60,
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          left: 20, right: 20, top: 10, bottom: 10),
-                      child: Text(
-                        "Otros Combustibles",
-                        style: TextStyle(color: Colors.white),
+            FutureBuilder<Fuels>(
+              future: ffll,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text("Error");
+                }
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Shortcut(
+                            texxt: "Gasolina Premium",
+                            value: 137.60,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Shortcut(
+                            texxt: "Gasolina Regular",
+                            value: 169.40,
+                          )
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Shortcut(
+                            texxt: "Gasoil Premium",
+                            value: 119.60,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Shortcut(
+                            texxt: "Gasoil Regular",
+                            value: 177.60,
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 20, right: 20, top: 10, bottom: 10),
+                            child: Text(
+                              "Otros Combustibles",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Text("err");
+              },
+            )
           ],
         ),
       ),
