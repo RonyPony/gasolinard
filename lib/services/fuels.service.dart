@@ -9,14 +9,13 @@ class FuelService implements FuelsServiceContract {
     try {
       final Dio dio = Dio();
       final response =
-          await dio.get("https://api.digital.gob.do/v1/fuels?date=2021-12-12");
-
+          await dio.get("http://216.172.100.170:8037/Combustiblesrd/getPrices");
       if (response.statusCode! < 400) {
         Fuels ex = Fuels.fromJson(response.data);
         return ex;
       } else {
         throw PlatformException(
-            code: "${response.statusCode}", message: "invalidEmail");
+            code: "${response.statusCode}", message: "error");
       }
     } catch (e) {
       throw Exception('error');

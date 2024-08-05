@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Size baseSize = MediaQuery.of(context).size;
     final fuelsProvider = Provider.of<FuelProvider>(context);
-    Future<Fuels> ffll = fuelsProvider.getAll();
+
     return Scaffold(
       backgroundColor: Colors.grey.shade800,
       body: Padding(
@@ -32,13 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Welcome",
+              "Bienvenido",
               style: TextStyle(color: Colors.white),
             ),
             Row(
               children: [
                 Text(
-                  "Find your course",
+                  "CombustibleRD",
                   style: TextStyle(fontSize: 28, color: Colors.white),
                 ),
                 SizedBox(
@@ -64,14 +64,36 @@ class _HomeScreenState extends State<HomeScreen> {
               height: baseSize.height * .04,
             ),
             Text(
-              "Combustibles",
+              "Precios de esta semana",
               style: TextStyle(fontSize: 28, color: Colors.white),
             ),
             FutureBuilder<Fuels>(
-              future: ffll,
+              future: fuelsProvider.getAll(),
               builder: (context, snapshot) {
+                print(snapshot.hasError);
+                print(snapshot.hasData);
+                print(snapshot.connectionState);
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: baseSize.height * .4,
+                      ),
+                      Text("Ups, intentalo mas tarde")
+                    ],
+                  );
+                }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: baseSize.height * .4,
+                      ),
+                      CircularProgressIndicator()
+                    ],
+                  );
                 }
                 if (snapshot.hasError) {
                   return Text("Error");
