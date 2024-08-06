@@ -6,6 +6,7 @@ import 'package:gasolinard/screens/allFuels.dart/allFuelsScreen.dart';
 import 'package:gasolinard/screens/shared_component/custom_card.dart';
 import 'package:provider/provider.dart';
 
+import '../shared_component/custom_card promo.dart';
 import '../shared_component/shorcut.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(top: baseSize.height * .05),
-              child: CustomCard(),
+              child: CustomCardPromo(),
             ),
             SizedBox(
               height: baseSize.height * .04,

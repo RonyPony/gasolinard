@@ -8,6 +8,7 @@ import '../allFuels.dart/allFuelsScreen.dart';
 import '../home/homeScreen.dart';
 import '../shared_component/custom_card.dart';
 import '../shared_component/shorcut.dart';
+import '../shared_component/underconstruction.dart';
 
 class HistoryFuels extends StatefulWidget {
   const HistoryFuels({super.key});
@@ -95,6 +96,7 @@ class _HistoryFuelsState extends State<HistoryFuels> {
                     return const Text("Error");
                   }
                   if (snapshot.connectionState == ConnectionState.done) {
+                    return UnderConstructionWidget();
                     return Container(
                         color: Colors.red,
                         height: baseSize.height * .5,

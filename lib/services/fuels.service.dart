@@ -29,7 +29,7 @@ class FuelService implements FuelsServiceContract {
       final response = await dio
           .get("http://216.172.100.170:8037/Combustiblesrd/getHistory");
       if (response.statusCode! < 400) {
-        var ex = Fuels.fromJson(response.data);
+        // var ex = Fuels.fromJson(response.data);
         return [];
       } else {
         throw PlatformException(
