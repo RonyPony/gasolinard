@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gasolinard/screens/getHistory/historyScreen.dart';
 
 class CustomCard extends StatefulWidget {
   @override
@@ -37,17 +38,22 @@ class _createState extends State<CustomCard> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 20, right: 20, top: 5, bottom: 5),
-                          child: Text(
-                            "Ver mas",
-                            style: TextStyle(color: Colors.white),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, HistoryFuels.routeName);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: 20, right: 20, top: 5, bottom: 5),
+                            child: Text(
+                              "Ver mas",
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),

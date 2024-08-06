@@ -1,27 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gasolinard/models/fuels.model.dart';
-import 'package:gasolinard/providers/fuels.provider.dart';
-import 'package:gasolinard/screens/allFuels.dart/allFuelsScreen.dart';
-import 'package:gasolinard/screens/shared_component/custom_card.dart';
+import 'package:gasolinard/screens/home/homeScreen.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/fuels.model.dart';
+import '../../providers/fuels.provider.dart';
 import '../shared_component/shorcut.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-  static String routeName = "/homeScreen";
-
+class AllFuelsScreen extends StatefulWidget {
+  const AllFuelsScreen({super.key});
+  static String routeName = "/allFuelsScreen";
   @override
-  State<StatefulWidget> createState() => _HomeScreenState();
+  State<AllFuelsScreen> createState() => _AllFuelsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AllFuelsScreenState extends State<AllFuelsScreen> {
   @override
   Widget build(BuildContext context) {
     Size baseSize = MediaQuery.of(context).size;
     final fuelsProvider = Provider.of<FuelProvider>(context);
-
     return Scaffold(
       backgroundColor: Colors.grey.shade800,
       body: Padding(
@@ -30,43 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
             left: baseSize.width * .03,
             right: baseSize.width * .03),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Bienvenido",
+            Text(
+              "CombustibleRD",
+              style: TextStyle(fontSize: 25, color: Colors.white),
+            ),
+            Text(
+              "Todos los Combustibles",
               style: TextStyle(color: Colors.white),
             ),
-            Row(
-              children: [
-                const Text(
-                  "CombustibleRD",
-                  style: TextStyle(fontSize: 25, color: Colors.white),
-                ),
-                SizedBox(
-                  width: baseSize.width * .3,
-                ),
-                CupertinoButton(
-                  padding: EdgeInsets.only(
-                      left: baseSize.width * .02, right: baseSize.width * .02),
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
-                  color: Colors.white,
-                )
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: baseSize.height * .05),
-              child: CustomCard(),
-            ),
             SizedBox(
-              height: baseSize.height * .04,
-            ),
-            const Text(
-              "Precios de esta semana",
-              style: TextStyle(fontSize: 28, color: Colors.white),
+              height: baseSize.height * .05,
             ),
             FutureBuilder<Fuels>(
               future: fuelsProvider.getAll(),
@@ -114,6 +85,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Combustibles oilRegular = snapshot.data!.combustibles!
                       .where((element) => element.nombre == "Gasoil Regular")
                       .first;
+
+                  Combustibles glp = snapshot.data!.combustibles!
+                      .where((element) =>
+                          element.nombre == "Gas Licuado de Petroleó (GLP)")
+                      .first;
+                  Combustibles natural = snapshot.data!.combustibles!
+                      .where((element) =>
+                          element.nombre == "Gas Natural (GNL-GNC)")
+                      .first;
                   return Column(
                     children: [
                       Row(
@@ -149,12 +129,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           )
                         ],
                       ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Shortcut(
+                            texxt: "GLP",
+                            value: glp.precio,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Shortcut(
+                            texxt: "Gas Natural",
+                            value: natural.precio,
+                          )
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, AllFuelsScreen.routeName);
+                            Navigator.pushNamed(context, HomeScreen.routeName);
                           },
                           child: Container(
                             decoration: const BoxDecoration(
@@ -165,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.only(
                                   left: 20, right: 20, top: 10, bottom: 10),
                               child: Text(
-                                "Otros Combustibles",
+                                "Volver",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

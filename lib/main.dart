@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gasolinard/providers/fuels.provider.dart';
+import 'package:gasolinard/routes.dart';
 import 'package:gasolinard/screens/home/homeScreen.dart';
 import 'package:gasolinard/services/fuels.service.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+        routes: Routes.getRoutes(),
         home: const HomeScreen(),
       ),
     );

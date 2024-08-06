@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class Shortcut extends StatefulWidget {
   const Shortcut({super.key, this.texxt = "Placeholder", required this.value});
   final String texxt;
-  final double value;
+  final String? value;
   @override
   State<StatefulWidget> createState() => _createState();
 }
@@ -19,7 +19,7 @@ class _createState extends State<Shortcut> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: baseSize.width * .37,
+          width: baseSize.width * .45,
           height: baseSize.height * .23,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(21),

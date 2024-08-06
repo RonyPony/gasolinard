@@ -11,10 +11,22 @@ class FuelProvider with ChangeNotifier {
   Future<Fuels> getAll() async {
     try {
       var result = await _serviceContract.getAllFuels();
-      notifyListeners();
+      // notifyListeners();
       return result;
     } catch (e) {
-      notifyListeners();
+      // notifyListeners();
+
+      throw e;
+    }
+  }
+
+  Future<List<Fuels>> getHistory() async {
+    try {
+      var result = await _serviceContract.getHistory();
+      // notifyListeners();
+      return result;
+    } catch (e) {
+      // notifyListeners();
 
       throw e;
     }
