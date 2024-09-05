@@ -46,16 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: baseSize.width * .3,
                 ),
-                CupertinoButton(
-                  padding: EdgeInsets.only(
-                      left: baseSize.width * .02, right: baseSize.width * .02),
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.search,
-                    color: Colors.black,
-                  ),
-                  color: Colors.white,
-                )
+                // CupertinoButton(
+                //   padding: EdgeInsets.only(
+                //       left: baseSize.width * .02, right: baseSize.width * .02),
+                //   onPressed: () {},
+                //   child: Icon(
+                //     Icons.search,
+                //     color: Colors.black,
+                //   ),
+                //   color: Colors.white,
+                // )
               ],
             ),
             Padding(
