@@ -9,7 +9,7 @@ class FuelService implements FuelsServiceContract {
     try {
       final Dio dio = Dio();
       final response =
-          await dio.get("http://216.172.100.170:8037/Combustiblesrd/getPrices");
+          await dio.get("http://216.172.100.195:8037/Combustiblesrd/getPrices");
       if (response.statusCode! < 400) {
         Fuels ex = Fuels.fromJson(response.data);
         return ex;
