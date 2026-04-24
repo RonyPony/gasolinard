@@ -6,9 +6,9 @@ import 'package:gasolinard/screens/home/homeScreen.dart';
 class Routes {
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      HomeScreen.routeName: (context) => HomeScreen(),
-      AllFuelsScreen.routeName: (context) => AllFuelsScreen(),
-      HistoryFuels.routeName: (context) => HistoryFuels()
+      HomeScreen.routeName: (context) => const HomeScreen(),
+      AllFuelsScreen.routeName: (context) => const AllFuelsScreen(),
+      HistoryFuels.routeName: (context) => const HistoryFuels(),
     };
   }
 }

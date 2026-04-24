@@ -9,14 +9,12 @@ class FuelService implements FuelsServiceContract {
     try {
       final Dio dio = Dio();
       final response =
-          await dio.get("http://38.247.133.70:8037/Combustiblesrd/getPrices");
+          await dio.get('http://38.247.133.70:8037/Combustiblesrd/getPrices');
       if (response.statusCode! < 400) {
-        Fuels ex = Fuels.fromJson(response.data);
-        return ex;
-      } else {
-        throw PlatformException(
-            code: "${response.statusCode}", message: "error");
+        final fuels = Fuels.fromJson(response.data);
+        return fuels;
       }
+      throw PlatformException(code: '${response.statusCode}', message: 'error');
     } catch (e) {
       throw Exception('error');
     }
@@ -26,15 +24,32 @@ class FuelService implements FuelsServiceContract {
   Future<List<Fuels>> getHistory() async {
     try {
       final Dio dio = Dio();
-      final response = await dio
-          .get("http://216.172.100.170:8037/Combustiblesrd/getHistory");
-      if (response.statusCode! < 400) {
-        // var ex = Fuels.fromJson(response.data);
-        return [];
-      } else {
-        throw PlatformException(
-            code: "${response.statusCode}", message: "error");
+      final response =
+          await dio.get('http://216.172.100.170:8037/Combustiblesrd/getHistory');
+      if (response.statusCode! >= 400) {
+        throw PlatformException(code: '${response.statusCode}', message: 'error');
       }
+
+      if (response.data is! List) {
+        return [];
+      }
+
+      final historyResponse = response.data as List<dynamic>;
+      return historyResponse
+          .whereType<List<dynamic>>()
+          .map((weekData) {
+            final combustibles = weekData
+                .whereType<Map>()
+                .map((item) => Combustibles.fromJson(Map<String, dynamic>.from(item)))
+                .toList();
+
+            return Fuels(
+              combustibles: combustibles,
+              success: true,
+              message: 'history',
+            );
+          })
+          .toList();
     } catch (e) {
       throw Exception('error');
     }

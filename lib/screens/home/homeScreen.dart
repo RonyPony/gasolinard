@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gasolinard/models/fuels.model.dart';
 import 'package:gasolinard/providers/fuels.provider.dart';
 import 'package:gasolinard/screens/allFuels.dart/allFuelsScreen.dart';
+import 'package:gasolinard/screens/getHistory/historyScreen.dart';
 import 'package:gasolinard/screens/shared_component/shorcut.dart';
+import 'package:gasolinard/utils/fuel_assets.dart';
+import 'package:gasolinard/utils/page_transitions.dart';
 import 'package:provider/provider.dart';
 
 import '../shared_component/custom_card promo.dart';
@@ -16,6 +19,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Future<Fuels> _fuelsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fuelsFuture = context.read<FuelProvider>().getAll();
+  }
+
   String _formatSyncDate(Fuels fuels) {
     final rawDate = fuels.combustibles
         ?.firstWhere(
@@ -74,12 +85,26 @@ class _HomeScreenState extends State<HomeScreen> {
     return fuels.combustibles!.firstWhere((fuel) => fuel.nombre == fuelName);
   }
 
+  void _openScreen(Widget page) {
+    Navigator.of(context).push(FadeSlideRoute(page: page));
+  }
+
   @override
   Widget build(BuildContext context) {
     final baseSize = MediaQuery.of(context).size;
-    final fuelsProvider = Provider.of<FuelProvider>(context);
-
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Soporte y asistencia: escríbenos a soporte@fuelrd.app'),
+            ),
+          );
+        },
+        backgroundColor: const Color(0xFF0EA5E9),
+        icon: const Icon(Icons.support_agent_rounded),
+        label: const Text('Soporte'),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -129,6 +154,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: baseSize.height * .025),
                 const CustomCardPromo(),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _openScreen(const HistoryFuels()),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFF38BDF8)),
+                    ),
+                    icon: const Icon(Icons.timeline_rounded),
+                    label: const Text('Ver histórico semanal'),
+                  ),
+                ),
                 SizedBox(height: baseSize.height * .03),
                 const Row(
                   children: [
@@ -146,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 14),
                 FutureBuilder<Fuels>(
-                  future: fuelsProvider.getAll(),
+                  future: _fuelsFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
@@ -243,12 +281,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 texxt: 'Gasolina Premium',
                                 value: gpremium.precio,
                                 icon: Icons.local_fire_department_rounded,
+                                svgAsset: FuelAssets.svgForFuel(gpremium.nombre ?? ''),
                               ),
                               const SizedBox(width: 12),
                               Shortcut(
                                 texxt: 'Gasolina Regular',
                                 value: gregular.precio,
                                 icon: Icons.local_gas_station_rounded,
+                                svgAsset: FuelAssets.svgForFuel(gregular.nombre ?? ''),
                               ),
                             ],
                           ),
@@ -259,12 +299,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 texxt: 'Gasoil Premium',
                                 value: oilOpti.precio,
                                 icon: Icons.ev_station_rounded,
+                                svgAsset: FuelAssets.svgForFuel(oilOpti.nombre ?? ''),
                               ),
                               const SizedBox(width: 12),
                               Shortcut(
                                 texxt: 'Gasoil Regular',
                                 value: oilRegular.precio,
                                 icon: Icons.speed_rounded,
+                                svgAsset: FuelAssets.svgForFuel(oilRegular.nombre ?? ''),
                               ),
                             ],
                           ),
@@ -272,12 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AllFuelsScreen.routeName,
-                                );
-                              },
+                              onPressed: () => _openScreen(const AllFuelsScreen()),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFF43F5E),
                                 foregroundColor: Colors.white,
