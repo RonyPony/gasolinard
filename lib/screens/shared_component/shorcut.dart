@@ -5,10 +5,12 @@ class Shortcut extends StatelessWidget {
     super.key,
     this.texxt = 'Placeholder',
     required this.value,
+    this.icon = Icons.local_gas_station_rounded,
   });
 
   final String texxt;
   final String? value;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +46,31 @@ class Shortcut extends StatelessWidget {
                   color: const Color(0xFFF43F5E).withOpacity(.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  'RD',
-                  style: TextStyle(
-                    color: Color(0xFFFDA4AF),
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, size: 14, color: const Color(0xFFFDA4AF)),
+                    const SizedBox(width: 5),
+                    const Text(
+                      'RD',
+                      style: TextStyle(
+                        color: Color(0xFFFDA4AF),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Image.asset('assets/fuel1.png', height: 54),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.92, end: 1),
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOutBack,
+              builder: (context, scale, child) {
+                return Transform.scale(scale: scale, child: child);
+              },
+              child: Image.asset('assets/fuel1.png', height: 54),
+            ),
             Text(
               value ?? '--',
               style: const TextStyle(

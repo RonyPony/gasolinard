@@ -1,29 +1,32 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+
 class ChangingTextWidget extends StatefulWidget {
+  const ChangingTextWidget({super.key});
+
   @override
-  _ChangingTextWidgetState createState() => _ChangingTextWidgetState();
+  State<ChangingTextWidget> createState() => _ChangingTextWidgetState();
 }
 
 class _ChangingTextWidgetState extends State<ChangingTextWidget> {
   final List<String> _words = [
-    "CONFIABLE",
-    "SEGURA",
-    "PRECISA",
-    "SIMPLE",
-    "RÁPIDA",
-    "EFICIENTE",
-    "ACCESIBLE"
+    'CONFIABLE',
+    'SEGURA',
+    'PRECISA',
+    'SIMPLE',
+    'RÁPIDA',
+    'EFICIENTE',
+    'ACCESIBLE'
   ];
-  String _text = "SOMOS...";
+  String _text = 'SOMOS...';
   late Timer _timer;
   int _index = 0;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 750), (Timer timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 750), (Timer timer) {
       setState(() {
         _text = _words[_index];
         _index = (_index + 1) % _words.length;
@@ -39,12 +42,17 @@ class _ChangingTextWidgetState extends State<ChangingTextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Size baseSize = MediaQuery.of(context).size;
-    return SizedBox(
-      width: baseSize.width * .5, // Ajusta el ancho según sea necesario
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
       child: Text(
         _text,
-        style: TextStyle(fontSize: 35, color: Colors.white),
+        style: const TextStyle(
+          fontSize: 34,
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          letterSpacing: .8,
+        ),
       ),
     );
   }

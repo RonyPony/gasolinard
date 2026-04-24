@@ -9,7 +9,7 @@ import '../shared_component/custom_card promo.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static String routeName = "/homeScreen";
+  static String routeName = '/homeScreen';
 
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -36,10 +36,38 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final localDate = parsedDate.toLocal();
-    String twoDigits(int value) => value.toString().padLeft(2, '0');
+    const weekDays = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
+    const months = [
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre',
+    ];
 
-    return '${twoDigits(localDate.day)}/${twoDigits(localDate.month)}/${localDate.year} '
-        '${twoDigits(localDate.hour)}:${twoDigits(localDate.minute)}';
+    final dayName = weekDays[localDate.weekday - 1];
+    final monthName = months[localDate.month - 1];
+    final hour12 = localDate.hour % 12 == 0 ? 12 : localDate.hour % 12;
+    final minutes = localDate.minute.toString().padLeft(2, '0');
+    final amPm = localDate.hour >= 12 ? 'PM' : 'AM';
+
+    return '$dayName ${localDate.day} de $monthName, ${localDate.year} • '
+        '$hour12:$minutes $amPm';
   }
 
   Combustibles _findFuel(Fuels fuels, String fuelName) {
@@ -69,38 +97,52 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Bienvenido 👋',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                Row(
+                  children: const [
+                    Icon(Icons.wb_sunny_outlined, color: Color(0xFF38BDF8)),
+                    SizedBox(width: 8),
+                    Text(
+                      'Bienvenido',
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'CombustibleRD',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.local_gas_station_rounded,
+                      color: Color(0xFFF43F5E),
+                      size: 28,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'CombustibleRD',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: baseSize.height * .025),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(.08),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.white.withOpacity(.12)),
-                  ),
-                  padding: const EdgeInsets.all(14),
-                  child: CustomCardPromo(),
-                ),
+                const CustomCardPromo(),
                 SizedBox(height: baseSize.height * .03),
-                const Text(
-                  'Precios de esta semana',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
+                const Row(
+                  children: [
+                    Icon(Icons.insights_rounded, color: Colors.white, size: 24),
+                    SizedBox(width: 8),
+                    Text(
+                      'Precios de esta semana',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 14),
                 FutureBuilder<Fuels>(
@@ -142,93 +184,116 @@ class _HomeScreenState extends State<HomeScreen> {
                     final oilOpti = _findFuel(fuels, 'Gasoil Óptimo');
                     final oilRegular = _findFuel(fuels, 'Gasoil Regular');
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                    return TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0, end: 1),
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOut,
+                      builder: (context, value, child) {
+                        return Opacity(
+                          opacity: value,
+                          child: Transform.translate(
+                            offset: Offset(0, (1 - value) * 24),
+                            child: child,
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: const Color(0xFF111827),
-                            border: Border.all(
-                              color: const Color(0xFF38BDF8).withOpacity(.45),
+                        );
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.sync,
-                                color: Color(0xFF38BDF8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF111827), Color(0xFF0B1220)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  'Última sincronización: ${_formatSyncDate(fuels)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                              border: Border.all(
+                                color: const Color(0xFF38BDF8).withOpacity(.45),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.event_available_rounded,
+                                  color: Color(0xFF38BDF8),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Última sincronización: ${_formatSyncDate(fuels)}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Shortcut(
+                                texxt: 'Gasolina Premium',
+                                value: gpremium.precio,
+                                icon: Icons.local_fire_department_rounded,
+                              ),
+                              const SizedBox(width: 12),
+                              Shortcut(
+                                texxt: 'Gasolina Regular',
+                                value: gregular.precio,
+                                icon: Icons.local_gas_station_rounded,
                               ),
                             ],
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Shortcut(
-                              texxt: 'Gasolina Premium',
-                              value: gpremium.precio,
-                            ),
-                            const SizedBox(width: 12),
-                            Shortcut(
-                              texxt: 'Gasolina Regular',
-                              value: gregular.precio,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Shortcut(
-                              texxt: 'Gasoil Premium',
-                              value: oilOpti.precio,
-                            ),
-                            const SizedBox(width: 12),
-                            Shortcut(
-                              texxt: 'Gasoil Regular',
-                              value: oilRegular.precio,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                AllFuelsScreen.routeName,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFF43F5E),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Shortcut(
+                                texxt: 'Gasoil Premium',
+                                value: oilOpti.precio,
+                                icon: Icons.ev_station_rounded,
                               ),
-                            ),
-                            icon: const Icon(Icons.local_gas_station),
-                            label: const Text('Ver otros combustibles'),
+                              const SizedBox(width: 12),
+                              Shortcut(
+                                texxt: 'Gasoil Regular',
+                                value: oilRegular.precio,
+                                icon: Icons.speed_rounded,
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 18),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AllFuelsScreen.routeName,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFF43F5E),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              icon: const Icon(Icons.grid_view_rounded),
+                              label: const Text('Ver otros combustibles'),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
