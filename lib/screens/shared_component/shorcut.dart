@@ -1,68 +1,78 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Shortcut extends StatefulWidget {
-  const Shortcut({super.key, this.texxt = "Placeholder", required this.value});
+class Shortcut extends StatelessWidget {
+  const Shortcut({
+    super.key,
+    this.texxt = 'Placeholder',
+    required this.value,
+  });
+
   final String texxt;
   final String? value;
-  @override
-  State<StatefulWidget> createState() => _createState();
-}
 
-class _createState extends State<Shortcut> {
   @override
   Widget build(BuildContext context) {
-    Size baseSize = MediaQuery.of(context).size;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: baseSize.width * .45,
-          height: baseSize.height * .23,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(21),
-            color: const Color(0xff353535),
+    return Expanded(
+      child: Container(
+        height: 188,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1F2937), Color(0xFF111827)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          padding: const EdgeInsets.only(
-            left: 13,
-            right: 12,
-            bottom: 17,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 77,
-                height: 78,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Image.asset("assets/fuel1.png"),
-              ),
-              SizedBox(height: 0.50),
-              Text(
-                widget.value.toString(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 34,
-                ),
-              ),
-              SizedBox(height: 0.50),
-              Text(
-                widget.texxt,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
+          border: Border.all(color: Colors.white10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black38,
+              blurRadius: 10,
+              offset: Offset(0, 5),
+            )
+          ],
         ),
-      ],
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF43F5E).withOpacity(.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'RD',
+                  style: TextStyle(
+                    color: Color(0xFFFDA4AF),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            Image.asset('assets/fuel1.png', height: 54),
+            Text(
+              value ?? '--',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              texxt,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

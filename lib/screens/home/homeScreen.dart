@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gasolinard/models/fuels.model.dart';
 import 'package:gasolinard/providers/fuels.provider.dart';
 import 'package:gasolinard/screens/allFuels.dart/allFuelsScreen.dart';
-import 'package:gasolinard/screens/shared_component/custom_card.dart';
+import 'package:gasolinard/screens/shared_component/shorcut.dart';
 import 'package:provider/provider.dart';
 
 import '../shared_component/custom_card promo.dart';
-import '../shared_component/shorcut.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,168 +16,225 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _formatSyncDate(Fuels fuels) {
+    final rawDate = fuels.combustibles
+        ?.firstWhere(
+          (combustible) =>
+              combustible.updateDate != null &&
+              combustible.updateDate!.trim().isNotEmpty,
+          orElse: () => Combustibles(updateDate: null),
+        )
+        .updateDate;
+
+    if (rawDate == null) {
+      return 'No disponible';
+    }
+
+    final parsedDate = DateTime.tryParse(rawDate);
+    if (parsedDate == null) {
+      return rawDate;
+    }
+
+    final localDate = parsedDate.toLocal();
+    String twoDigits(int value) => value.toString().padLeft(2, '0');
+
+    return '${twoDigits(localDate.day)}/${twoDigits(localDate.month)}/${localDate.year} '
+        '${twoDigits(localDate.hour)}:${twoDigits(localDate.minute)}';
+  }
+
+  Combustibles _findFuel(Fuels fuels, String fuelName) {
+    return fuels.combustibles!.firstWhere((fuel) => fuel.nombre == fuelName);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size baseSize = MediaQuery.of(context).size;
+    final baseSize = MediaQuery.of(context).size;
     final fuelsProvider = Provider.of<FuelProvider>(context);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade800,
-      body: Padding(
-        padding: EdgeInsets.only(
-            top: baseSize.height * .05,
-            left: baseSize.width * .03,
-            right: baseSize.width * .03),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Bienvenido",
-              style: TextStyle(color: Colors.white),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF0F172A), Color(0xFF1E293B), Color(0xFF334155)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: baseSize.width * .05,
+              vertical: baseSize.height * .02,
             ),
-            Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "CombustibleRD",
-                  style: TextStyle(fontSize: 25, color: Colors.white),
+                  'Bienvenido 👋',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
-                SizedBox(
-                  width: baseSize.width * .3,
+                const SizedBox(height: 6),
+                const Text(
+                  'CombustibleRD',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
                 ),
-                // CupertinoButton(
-                //   padding: EdgeInsets.only(
-                //       left: baseSize.width * .02, right: baseSize.width * .02),
-                //   onPressed: () {},
-                //   child: Icon(
-                //     Icons.search,
-                //     color: Colors.black,
-                //   ),
-                //   color: Colors.white,
-                // )
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: baseSize.height * .05),
-              child: CustomCardPromo(),
-            ),
-            SizedBox(
-              height: baseSize.height * .04,
-            ),
-            const Text(
-              "Precios de esta semana",
-              style: TextStyle(fontSize: 28, color: Colors.white),
-            ),
-            FutureBuilder<Fuels>(
-              future: fuelsProvider.getAll(),
-              builder: (context, snapshot) {
-                print(snapshot.hasError);
-                print(snapshot.hasData);
-                print(snapshot.connectionState);
-                if (snapshot.hasError) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: baseSize.height * .4,
-                      ),
-                      Text("Ups, intentalo mas tarde")
-                    ],
-                  );
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: baseSize.height * .4,
-                      ),
-                      const CircularProgressIndicator(
-                        color: Color.fromARGB(255, 255, 0, 0),
-                      )
-                    ],
-                  );
-                }
-                if (snapshot.hasError) {
-                  return const Text("Error");
-                }
-                if (snapshot.connectionState == ConnectionState.done) {
-                  Combustibles gpremiun = snapshot.data!.combustibles!
-                      .where((element) => element.nombre == "Gasolina Premium")
-                      .first;
-                  Combustibles gregular = snapshot.data!.combustibles!
-                      .where((element) => element.nombre == "Gasolina Regular")
-                      .first;
-                  Combustibles oilopti = snapshot.data!.combustibles!
-                      .where((element) => element.nombre == "Gasoil Óptimo")
-                      .first;
-                  Combustibles oilRegular = snapshot.data!.combustibles!
-                      .where((element) => element.nombre == "Gasoil Regular")
-                      .first;
-                  return Column(
-                    children: [
-                      Row(
-                        children: [
-                          Shortcut(
-                            texxt: "Gasolina Premium",
-                            value: gpremiun.precio,
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Shortcut(
-                            texxt: "Gasolina Regular",
-                            value: gregular.precio,
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          Shortcut(
-                            texxt: "Gasoil Premium",
-                            value: oilopti.precio,
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Shortcut(
-                            texxt: "Gasoil Regular",
-                            value: oilRegular.precio,
-                          )
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, AllFuelsScreen.routeName);
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.red,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                            child: const Padding(
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, top: 10, bottom: 10),
-                              child: Text(
-                                "Otros Combustibles",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                SizedBox(height: baseSize.height * .025),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(.08),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: Colors.white.withOpacity(.12)),
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  child: CustomCardPromo(),
+                ),
+                SizedBox(height: baseSize.height * .03),
+                const Text(
+                  'Precios de esta semana',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                FutureBuilder<Fuels>(
+                  future: fuelsProvider.getAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 24),
+                          child: Text(
+                            'Ups, inténtalo más tarde.',
+                            style: TextStyle(color: Colors.white70),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }
-                return Text("err");
-              },
-            )
-          ],
+                      );
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.only(top: 24),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFFF43F5E),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data?.combustibles == null) {
+                      return const Text(
+                        'No hay datos disponibles.',
+                        style: TextStyle(color: Colors.white70),
+                      );
+                    }
+
+                    final fuels = snapshot.data!;
+                    final gpremium = _findFuel(fuels, 'Gasolina Premium');
+                    final gregular = _findFuel(fuels, 'Gasolina Regular');
+                    final oilOpti = _findFuel(fuels, 'Gasoil Óptimo');
+                    final oilRegular = _findFuel(fuels, 'Gasoil Regular');
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: const Color(0xFF111827),
+                            border: Border.all(
+                              color: const Color(0xFF38BDF8).withOpacity(.45),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.sync,
+                                color: Color(0xFF38BDF8),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Última sincronización: ${_formatSyncDate(fuels)}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Shortcut(
+                              texxt: 'Gasolina Premium',
+                              value: gpremium.precio,
+                            ),
+                            const SizedBox(width: 12),
+                            Shortcut(
+                              texxt: 'Gasolina Regular',
+                              value: gregular.precio,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Shortcut(
+                              texxt: 'Gasoil Premium',
+                              value: oilOpti.precio,
+                            ),
+                            const SizedBox(width: 12),
+                            Shortcut(
+                              texxt: 'Gasoil Regular',
+                              value: oilRegular.precio,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                AllFuelsScreen.routeName,
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF43F5E),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            icon: const Icon(Icons.local_gas_station),
+                            label: const Text('Ver otros combustibles'),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
