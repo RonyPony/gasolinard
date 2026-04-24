@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Soporte y asistencia: escríbenos a soporte@fuelrd.app'),
+              content: Text('Soporte y asistencia: escríbenos a rn.cz@icloud.com'),
             ),
           );
         },
